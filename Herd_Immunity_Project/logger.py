@@ -58,7 +58,7 @@ class Logger(object):
 
     def write_metadata(self, pop_size, vacc_percentage, virus_name, mortality_rate, basic_repro_num):
         with open(self.file_name, 'w') as file:
-            log = '{}\t{}\t{}\t{}\t{}\n'.format(population_size, vacc_percentage, virus.name, virus.mortality_rate, virus.basic_repro_num)
+            log = '{}\t{}\t{}\t{}\t{}\n'.format(pop_size, vacc_percentage, virus_name, mortality_rate, basic_repro_num)
             file.write(log)
         return log
         # TODO: Finish this method.  The simulation class should use this method

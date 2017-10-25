@@ -88,8 +88,8 @@ class Simulation(object):
         # TODO: Create a Logger object and bind it to self.logger.  You should use this
         # logger object to log all events of any importance during the simulation.  Don't forget
         # to call these logger methods in the corresponding parts of the simulation!
-        self.logger = Logger("log.txt")
-
+        self.logger = Logger(self.file_name)
+        self.logger.write_metadata(self.population_size, self.vacc_percentage, self.virus_name, self.mortality_rate, self.basic_repro_num)
         # This attribute will be used to keep track of all the people that catch
         # the infection during a given time step. We'll store each newly infected
         # person's .ID attribute in here.  At the end of each time step, we'll call
@@ -137,7 +137,7 @@ class Simulation(object):
         return population
 
     def _simulation_should_continue(self):
-        if self.population == 0 or self.infected_count == 0:
+        if self.population == 0:
             return False
         else:
             return True
@@ -151,6 +151,12 @@ class Simulation(object):
 
 
     def run(self):
+        time_step_counter = 0
+        should_continue = None
+        self._simulation_should_continue()
+        while should_continue:
+           self._simulation_should_continue()
+        print('The simulation has ended after ' + str(time_step_counter) + ' turns.')
         # TODO: Finish this method.  This method should run the simulation until
         # everyone in the simulation is dead, or the disease no longer exists in the
         # population. To simplify the logic here, we will use the helper method
@@ -161,18 +167,12 @@ class Simulation(object):
         # have passed using the time_step_counter variable.  Make sure you remember to
         # the logger's log_time_step() method at the end of each time step, pass in the
         # time_step_counter variable!
-        time_step_counter = 0
         # TODO: Remember to set this variable to an intial call of
         # self._simulation_should_continue()!
-        should_continue = None
-        self._simulation_should_continue()
-        while should_continue:
-           self._simulation_should_continue()
 
         # TODO: for every iteration of this loop, call self.time_step() to compute another
         # round of this simulation.  At the end of each iteration of this loop, remember
         # to rebind should_continue to another call of self._simulation_should_continue()!
-        print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
 
     def time_step(self):
         interaction_counter = 0
