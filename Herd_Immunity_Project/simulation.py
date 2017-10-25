@@ -4,6 +4,7 @@ from person import Person
 from logger import Logger
 
 class Simulation(object):
+
     '''
     Main class that will run the herd immunity simulation program.  Expects initialization
     parameters passed as command line arguments when file is run.
@@ -72,20 +73,22 @@ class Simulation(object):
     def __init__(self, population_size, vacc_percentage, virus_name,
                  mortality_rate, basic_repro_num, initial_infected=1):
         self.population_size = population_size
+        self.vacc_percentage = vacc_percentage
+        self.virus_name = virus_name
+        self.mortality_rate = mortality_rate
+        self.basic_repro_num = basic_repro_num
+        self.initial_infected = initial_infected
         self.population = []
         self.total_infected = 0
         self.current_infected = 0
         self.next_person_id = 0
-        self.virus_name = virus_name
-        self.mortality_rate = mortality_rate
-        self.basic_repro_num = basic_repro_num
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
             virus_name, population_size, vacc_percentage, initial_infected)
 
         # TODO: Create a Logger object and bind it to self.logger.  You should use this
         # logger object to log all events of any importance during the simulation.  Don't forget
         # to call these logger methods in the corresponding parts of the simulation!
-        self.logger = None
+        self.logger = Logger("log.txt")
 
         # This attribute will be used to keep track of all the people that catch
         # the infection during a given time step. We'll store each newly infected
@@ -104,32 +107,48 @@ class Simulation(object):
         # people vaccinated, correct number of initially infected people).
         population = []
         infected_count = 0
+        person_id = 1
         while len(population) != pop_size:
             if infected_count !=  initial_infected:
+                self.population.append(Person(person_id, False, True))
+                person_id += 1
+                infected_count += 1
+
                 # TODO: Create all the infected people first, and then worry about the rest.
                 # Don't forget to increment infected_count every time you create a
                 # new infected person!
-                pass
+
             else:
+                random_number = random.randint(0,1)
+                if random_number < vacc_percentage:
+                    self.population.append(Person(person_id, True, False))
+                    person_id += 1
+                else:
+                    self.population.append(Person(person_id, False, False))
+                    person_id += 1
                 # Now create all the rest of the people.
                 # Every time a new person will be created, generate a random number between
                 # 0 and 1.  If this number is smaller than vacc_percentage, this person
                 # should be created as a vaccinated person. If not, the person should be
                 # created as an unvaccinated person.
-                pass
             # TODO: After any Person object is created, whether sick or healthy,
             # you will need to increment self.next_person_id by 1. Each Person object's
             # ID has to be unique!
         return population
 
     def _simulation_should_continue(self):
-        # TODO: Complete this method!  This method should return True if the simulation
+        if self.population == 0 or self.infected_count == 0:
+            return False
+        else:
+            return True
+
+         # TODO: Complete this method!  This method should return True if the simulation
         # should continue, or False if it should not.  The simulation should end under
         # any of the following circumstances:
         #     - The entire population is dead.
         #     - There are no infected people left in the population.
         # In all other instances, the simulation should continue.
-        pass
+
 
     def run(self):
         # TODO: Finish this method.  This method should run the simulation until
@@ -146,14 +165,28 @@ class Simulation(object):
         # TODO: Remember to set this variable to an intial call of
         # self._simulation_should_continue()!
         should_continue = None
+        self._simulation_should_continue()
         while should_continue:
+           self._simulation_should_continue()
+
         # TODO: for every iteration of this loop, call self.time_step() to compute another
         # round of this simulation.  At the end of each iteration of this loop, remember
         # to rebind should_continue to another call of self._simulation_should_continue()!
-            pass
         print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
 
     def time_step(self):
+        interaction_counter = 0
+        random_person = random.choice(self.population) #infected: false, alive: true
+        infected_list = []
+
+        for select_person in self.population:
+            if select_person.infected == True:
+                infected_list.append(select_person)
+
+        for select_person in self.population:
+            if random_person.is_alive == True and select_person.is_alive == True:
+                self.interaction(select_person, random_person)
+
         # TODO: Finish this method!  This method should contain all the basic logic
         # for computing one time step in the simulation.  This includes:
             # - For each infected person in the population:
@@ -165,7 +198,7 @@ class Simulation(object):
             #           - Else:
             #               - Call simulation.interaction(person, random_person)
             #               - Increment interaction counter by 1.
-            pass
+
 
     def interaction(self, person, random_person):
         # TODO: Finish this method! This method should be called any time two living
@@ -198,6 +231,7 @@ class Simulation(object):
         #   - Set this Person's .infected attribute to True.
         # NOTE: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list!
+        pass
 
 if __name__ == "__main__":
     params = sys.argv[1:]
