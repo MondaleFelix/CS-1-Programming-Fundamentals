@@ -98,16 +98,8 @@ class Simulation(object):
         # list.
         self.newly_infected = []
         self._create_population(self.initial_infected)
-        # TODO: Call self._create_population() and pass in the correct parameters.
-        # Store the array that this method will return in the self.population attribute.
 
     def _create_population(self, initial_infected):
-        # TODO: Finish this method!  This method should be called when the simulation
-        # begins, to create the population that will be used. This method should return
-        # an array filled with Person objects that matches the specifications of the
-        # simulation (correct number of people in the population, correct percentage of
-        # people vaccinated, correct number of initially infected people).
-        # population = []
         infected_count = 0
         person_id = 1
         print('before:', self.population)
@@ -116,11 +108,6 @@ class Simulation(object):
                 self.population.append(Person(person_id, False, True, self.mortality_rate))
                 person_id += 1
                 infected_count += 1
-
-                # TODO: Create all the infected people first, and then worry about the rest.
-                # Don't forget to increment infected_count every time you create a
-                # new infected person!
-
             else:
                 random_number = random.randint(0,1)
                 if random_number < self.vacc_percentage:
@@ -130,14 +117,6 @@ class Simulation(object):
                 else:
                     self.population.append(Person(person_id, False, False))
                     person_id += 1
-                # Now create all the rest of the people.
-                # Every time a new person will be created, generate a random number between
-                # 0 and 1.  If this number is smaller than vacc_percentage, this person
-                # should be created as a vaccinated person. If not, the person should be
-                # created as an unvaccinated person.
-            # TODO: After any Person object is created, whether sick or healthy,
-            # you will need to increment self.next_person_id by 1. Each Person object's
-            # ID has to be unique!
         print('after:', len(self.population))
         return self.population
 
@@ -145,22 +124,17 @@ class Simulation(object):
         vacc_count = 0
         alive_count = 0
         if len(self.population) == 0:
-            print('first')
             return False
         for person in self.population:
             if person.infected == None or person.infected == False:
-                print('second')
                 vacc_count += 1
             elif person.is_alive:
-                print('third')
                 alive_count += 1
 
         if vacc_count >= len(self.population):
-            print('fourth')
             return False
         # elif alive_count >= len(self.population):
         elif alive_count == 0:
-            print('fifth')
             return True
 
 
